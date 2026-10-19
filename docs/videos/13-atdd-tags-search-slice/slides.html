@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 13 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="13" data-video-title="ATDD implementation: tags and search" data-parts="Introduction|What was built|Requirements|Status|Decisions|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 13</div>
+  <h1>ATDD implementation: tags and search</h1>
+  <p class="lead">Step thirteen, slice three: the paged list, tag filter, live search and tagging in the editor. As of October 2026.</p>
+</section>
+
+<section id="query" data-part="1" data-cue="The list query. The notes repository">
+  <h2>The list query</h2>
+  <div class="cols">
+    <div class="card"><h3><code>notesRepo.list</code></h3><p>One page of <code>NoteListItem</code> rows: title, 240-character snippet, tags, times; matching <code>total</code> and a keyset <code>nextCursor</code> on <code>(updated_at, id)</code></p></div>
+    <div class="card sky"><h3>Tag and search</h3><p><code>EXISTS</code> on <code>note_tags</code>; <code>LIKE ? ESCAPE '\'</code> with <code>containsPattern</code></p></div>
+    <div class="card forest"><h3><code>GET /api/notes</code></h3><p><code>listQuerySchema</code> parses <code>q</code>, <code>tag</code>, <code>limit</code>, <code>before</code>; adds <code>workspaceTotal</code></p></div>
+  </div>
+</section>
+
+<section id="tags" data-part="1" data-cue="Tags. Attach by name finds">
+  <h2>Tags</h2>
+  <ul>
+    <li><code>tagsRepo.attachByName</code>: find or create, refuse the eleventh, insert, move <code>updated_at</code>, one transaction</li>
+    <li><code>tagsRepo.detach</code> and <code>listWithCounts</code></li>
+    <li><code>POST /api/notes/:id/tags</code> and <code>DELETE /api/notes/:id/tags/:name</code> authorise the note first and return the note plus the tag counts</li>
+    <li><code>lib/tag.ts</code> (<code>normalizeTagInput</code>, <code>pickerOptions</code>) · <code>lib/highlight.ts</code> (<code>splitHighlights</code>)</li>
+  </ul>
+</section>
+
+<section id="store" data-part="1" data-cue="The workspace store now holds the active filter">
+  <h2>The workspace store</h2>
+  <div class="cols">
+    <div class="card"><h3>Filter and view</h3><p>Active <code>filter</code> from the URL, <code>searchText</code>, and a <code>view</code>: rows, total, cursor, loading / ready / error, 300 ms slow flag, request reference</p></div>
+    <div class="card good"><h3>Late answers ignored</h3><p><code>AbortController</code> per filter change; query committed 200 ms after the last keystroke, written with <code>history.replaceState</code></p></div>
+  </div>
+</section>
+
+<section id="pane" data-part="1" data-cue="The list pane. A search field appears">
+  <h2>The list pane</h2>
+  <div class="cols">
+    <div class="card"><h3>Search</h3><p><code>SearchField</code>: <code>/</code> focuses, Escape clears, 100 characters; <code>SearchSummary</code>; polite "2 of 12 notes"</p></div>
+    <div class="card sky"><h3>Rows</h3><p><code>HighlightedText</code> as <code>&lt;mark&gt;</code> from text nodes; three chips plus "+n"</p></div>
+    <div class="card forest"><h3>States</h3><p>Skeleton · error with Try again · no results · empty tag · "Showing 50 of 1,284"</p></div>
+  </div>
+</section>
+
+<section id="picker" data-part="1" data-cue="Tags in the editor. Tag chips">
+  <h2>Tags in the editor</h2>
+  <ul>
+    <li><code>TagChips</code>: "Remove tag &lt;name&gt;" buttons; dashed "Add tag", disabled with its reason at 10 tags</li>
+    <li><code>TagPicker</code>: non-modal popover, combobox "Tag name", listbox with counts, <code>Create “planning”</code>, "No matching tag", busy and error-with-Retry states</li>
+    <li>A tag change is a save: chips, last-edited time and save status follow</li>
+  </ul>
+</section>
+
+<section id="reqs1" data-part="2" data-cue="Nine tag and list requirements are done">
+  <h2>Requirements: tags</h2>
+  <table class="grid small">
+    <tr><th>L2</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>L2-019 Add an existing tag</td><td>Done (1-5)</td><td><code>tags.spec.ts</code>; at 10 tags disabled, server 400</td></tr>
+    <tr><td>L2-020 Create a tag</td><td>Done (1-6)</td><td>Single Create option; case-different name reuses the tag</td></tr>
+    <tr><td>L2-021 Remove a tag and lifecycle</td><td>Done (1-4)</td><td>Last note losing a tag removes it from the sidebar</td></tr>
+    <tr><td>L2-022 Sidebar tag list</td><td>Done (1-3)</td><td>Counts; another account's tags never listed</td></tr>
+  </table>
+</section>
+
+<section id="reqs2" data-part="2" data-cue="Search: one request two hundred">
+  <h2>Requirements: list and search</h2>
+  <table class="grid small">
+    <tr><th>L2</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>L2-023 Notes list</td><td>Done (1-6)</td><td><code>notes-list.spec.ts</code>; 1,284 notes show 50 plus Load more</td></tr>
+    <tr><td>L2-024 Search</td><td>Done (1-8)</td><td><code>search.spec.ts</code>; <code>%</code> <code>_</code> <code>'</code> <code>\</code> match literally; 101 characters is 400</td></tr>
+    <tr><td>L2-025 No search results</td><td>Done (1-4)</td><td>"0 of 12"; New note with the query as title</td></tr>
+  </table>
+</section>
+
+<section id="reqs3" data-part="2" data-cue="Filter by tag: only the tagged notes">
+  <h2>Requirements: filter and failure</h2>
+  <table class="grid small">
+    <tr><th>L2</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>L2-026 Filter by tag</td><td>Done (1-5)</td><td>Malformed tag: 400 from the API, ignored by the page</td></tr>
+    <tr><td>L2-028 Loading and failure</td><td>Done (1-5)</td><td>Skeleton after 300 ms; reference from <code>X-Request-Id</code>; no stack, SQL or path</td></tr>
+  </table>
+</section>
+
+<section id="moved" data-part="2" data-cue="Six cross-cutting rows moved">
+  <h2>Rows that moved</h2>
+  <ul class="small">
+    <li>L2-038 validation: every route handler and Server Action parses with a schema</li>
+    <li>L2-039 authorisation: foreign tag changes are 403 and change nothing</li>
+    <li>L2-041 safe queries and output: done (1-4)</li>
+    <li>L2-044 and L2-048: extended to the filtered list, picker states and list error</li>
+    <li>L2-049 performance: first page of 50 under 200 ms p95; search under 300 ms p95</li>
+  </ul>
+</section>
+
+<section id="status" data-part="3" data-cue="One hundred and seventy-two unit tests pass">
+  <h2>Status after slice three</h2>
+  <div class="cols">
+    <div class="card good"><h3>172</h3><p>unit tests (40 new)</p></div>
+    <div class="card good"><h3>280</h3><p>acceptance tests (58 new definitions, 61 runs)</p></div>
+  </div>
+  <p class="small muted">Remaining: the account slice, L2-029 to L2-032 and L2-034</p>
+</section>
+
+<section id="dec1" data-part="4" data-cue="Nine decisions are recorded">
+  <h2>Decisions: picker and URL</h2>
+  <div class="cols">
+    <div class="card"><h3>A popover, not <code>Dialog</code></h3><p>The mocks draw it anchored to "Add tag"; it closes on Escape, outside click and after an attach</p></div>
+    <div class="card sky"><h3>The filter lives in the URL</h3><p><code>?q=</code> and <code>?tag=</code>; <code>history.replaceState</code> so typing never round-trips</p></div>
+  </div>
+</section>
+
+<section id="dec2" data-part="4" data-cue="A malformed tag in the page URL is ignored">
+  <h2>Decisions: the edges</h2>
+  <ul>
+    <li>The layout seeds the first page for the URL's filter; no <code>GET /api/tags</code></li>
+    <li>A malformed page tag is ignored; the API answers 400</li>
+    <li>An empty tag filter shows "0 notes" and a <code>TagEmpty</code> panel</li>
+  </ul>
+</section>
+
+<section id="dec3" data-part="4" data-cue="Chips keep attach order">
+  <h2>Decisions: details</h2>
+  <ul>
+    <li>Chips keep attach order (<code>note_tags.rowid</code>)</li>
+    <li>"Clear search" keeps the mock's name on the field and the panel</li>
+    <li>Snippets are 240 characters from the server</li>
+    <li><code>%</code> matches the seeded recipe and the test's own note: a literal match</li>
+  </ul>
+</section>
+
+<section id="recap" data-part="5" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>Slice three: the paged list, tag filter, live search and the tag picker</div>
+    <div>The filter lives in the URL; the server seeds the first page for it</div>
+    <div>Input is matched literally; highlights come from text nodes</div>
+    <div>172 unit and 280 acceptance tests pass</div>
+  </div>
+</section>
+
+<section id="next" data-part="5" data-cue="Next time: the account slice">
+  <div class="kicker">Next</div>
+  <h2>The account slice</h2>
+  <p class="lead">Then step fourteen: the demo videos.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

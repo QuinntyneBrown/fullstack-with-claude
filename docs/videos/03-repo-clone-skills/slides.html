@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 03 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="03" data-video-title="Repo, clone and skills" data-parts="Introduction|Repo|Clone|Skills|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 03</div>
+  <h1>Repo, clone and skills</h1>
+  <p class="lead">Steps three to five: a public repo, an empty clone, and ten skills in two folders.</p>
+</section>
+
+<section id="create" data-part="1" data-cue="Step three creates the repository">
+  <h2>Step 3 · Create the repo</h2>
+  <pre class="code tight" data-lang="sh">gh repo create QuinntyneBrown/selah --public \
+  --description "Selah: a small notes app, the reference app for the Full stack with Claude video series"</pre>
+</section>
+
+<section id="decided" data-part="1" data-cue="Two things are decided in that one command">
+  <h2>Decided in one command</h2>
+  <div class="cols">
+    <div class="card"><h3>Public</h3><p>A reference app is meant to be read.</p></div>
+    <div class="card forest"><h3>Described up front</h3><p>What it is and what it is for, before anyone opens a file.</p></div>
+  </div>
+</section>
+
+<section id="clone" data-part="2" data-cue="Step four clones it">
+  <h2>Step 4 · Clone it empty</h2>
+  <pre class="code" data-lang="sh">C:\projects&gt; gh repo clone QuinntyneBrown/selah selah
+warning: You appear to have cloned an empty repository.</pre>
+</section>
+
+<section id="why-empty" data-part="2" data-cue="That warning is the point">
+  <h2>That warning is the point</h2>
+  <ul>
+    <li>No README, no license, no scaffold</li>
+    <li>Every file arrives through a step in the process</li>
+    <li>Each step has a log: which model, which prompt</li>
+  </ul>
+  <p class="lead">An empty clone means nothing arrives from memory.</p>
+</section>
+
+<section id="skills" data-part="3" data-cue="Step five copies the skills in">
+  <h2>Step 5 · Copy the skills in</h2>
+  <div class="flow">
+    <div class="node ext"><b>agent-toolkit</b><small>QuinntyneBrown/agent-toolkit · skills/*</small></div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>.claude/skills/</b><small>10 skills</small></div>
+    <div class="arrow">=</div>
+    <div class="node accent"><b>.agents/skills/</b><small>10 skills</small></div>
+  </div>
+  <p class="lead">A skill is a folder with a <code>SKILL.md</code>: how to do one kind of task. A recursive diff between the two folders is empty.</p>
+</section>
+
+<section id="ten" data-part="3" data-cue="Here are the ten">
+  <h2>The ten skills</h2>
+  <div class="cols">
+    <ol class="steps">
+      <li>creating-narrated-videos</li>
+      <li>estimating-designs</li>
+      <li>extracting-design-systems</li>
+      <li>recording-demo-videos</li>
+      <li>writing-agent-instructions</li>
+    </ol>
+    <ol class="steps" style="counter-reset: step 5">
+      <li>writing-design-documents</li>
+      <li>writing-feature-prompts</li>
+      <li>writing-html-mocks</li>
+      <li>writing-requirements</li>
+      <li>writing-screen-composition</li>
+    </ol>
+  </div>
+</section>
+
+<section id="map" data-part="3" data-cue="Look at the names next to the fourteen steps">
+  <h2>Skills are the process</h2>
+  <table class="grid">
+    <tr><th>Step</th><th>Skill</th></tr>
+    <tr><td>6 · Agent files</td><td><code>writing-agent-instructions</code></td></tr>
+    <tr><td>8 · HTML mocks</td><td><code>writing-html-mocks</code></td></tr>
+    <tr><td>9 · Design system</td><td><code>extracting-design-systems</code></td></tr>
+    <tr><td>10 · Specs</td><td><code>writing-requirements</code></td></tr>
+    <tr><td>11 · Detailed designs</td><td><code>writing-design-documents</code></td></tr>
+    <tr><td>12 · Estimates</td><td><code>estimating-designs</code></td></tr>
+    <tr><td>14 · Demo videos</td><td><code>recording-demo-videos</code></td></tr>
+  </table>
+</section>
+
+<section id="recap" data-part="4" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>Step 3: <code>gh repo create</code>, public, described up front</div>
+    <div>Step 4: clone it empty, so every file arrives through the process</div>
+    <div>Step 5: ten skills in both <code>.claude/skills/</code> and <code>.agents/skills/</code>, empty diff</div>
+    <div>One skill per phase: the skills are the process</div>
+  </div>
+</section>
+
+<section id="next" data-part="4" data-cue="Next time, steps six and seven">
+  <div class="kicker">Next</div>
+  <h2>04 · Agent files and a fresh session</h2>
+  <p class="lead">Writing the agent instructions, and proving a new session picks them up.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

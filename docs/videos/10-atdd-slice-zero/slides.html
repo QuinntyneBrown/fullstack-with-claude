@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 10 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="10" data-video-title="ATDD implementation: slice zero" data-parts="Introduction|Rule|Slice zero|Harness|Status|Decisions|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 10</div>
+  <h1>ATDD implementation: slice zero</h1>
+  <p class="lead">Step thirteen, first slice: the foundation every feature renders into. As of October 2026.</p>
+</section>
+
+<section id="rule" data-part="1" data-cue="The agent instructions set one rule for this step">
+  <h2>The rule</h2>
+  <p class="quote">No code without a failing acceptance test.</p>
+  <div class="cols">
+    <div class="card"><h3>Every test names its criterion</h3><p><code>L2-035.5</code>: requirement 35, criterion 5</p></div>
+    <div class="card sky"><h3>Where tests live</h3><p><code>tests/unit/</code> for Vitest · <code>tests/e2e/</code> for Playwright, behind <code>tests/e2e/pages/</code></p></div>
+  </div>
+</section>
+
+<section id="tracked" data-part="1" data-cue="Progress is tracked per L2 requirement">
+  <h2>Tracked per requirement</h2>
+  <table class="grid small">
+    <tr><th>L2</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>L2-033 Theme preference</td><td>Done (1-4)</td><td><code>theme.spec.ts</code></td></tr>
+    <tr><td>L2-035 Toasts</td><td>Done (1-7)</td><td><code>notifications.spec.ts</code>, <code>notification-state.spec.ts</code></td></tr>
+    <tr><td>L2-037 Status pages</td><td>Partial (1-4)</td><td><code>status-pages.spec.ts</code>; criterion 5 waits for sign-out</td></tr>
+    <tr><td>L2-049 Performance budgets</td><td>Partial (4)</td><td><code>password.spec.ts</code>; 1, 2, 3, 5 need list, search and save</td></tr>
+  </table>
+  <p class="small muted">docs/process/13-progress.md in the Selah repo</p>
+</section>
+
+<section id="slice" data-part="2" data-cue="Slice zero is the scaffold">
+  <h2>Slice zero</h2>
+  <div class="cols four">
+    <div class="card"><h3>Scaffold</h3></div>
+    <div class="card sky"><h3>Data layer</h3></div>
+    <div class="card forest"><h3>App shell</h3></div>
+    <div class="card indoor"><h3>Platform</h3></div>
+  </div>
+  <p class="lead">Theme, toasts, banners, status pages, validation, credentials, request protection, in-memory data, responsive layout, drawer, dialogs, tokens, accessibility.</p>
+</section>
+
+<section id="commands" data-part="2" data-cue="The commands are what you would expect">
+  <h2>How to run it</h2>
+  <table class="grid small">
+    <tr><th>Command</th><th>What it does</th></tr>
+    <tr><td><code>npm run dev</code></td><td>Dev server; copy <code>.env.example</code> to <code>.env.local</code> first</td></tr>
+    <tr><td><code>npm run build</code> / <code>npm start</code></td><td>Production; <code>SESSION_SECRET</code> (32+ characters) required</td></tr>
+    <tr><td><code>npm run lint</code></td><td>ESLint, including the no-ad-hoc-colours rule</td></tr>
+    <tr><td><code>npm run typecheck</code></td><td><code>tsc --noEmit</code>, strict</td></tr>
+    <tr><td><code>npm test</code></td><td>Vitest: 64 tests, each with a fresh <code>:memory:</code> database</td></tr>
+    <tr><td><code>npm run test:e2e</code></td><td>Playwright against a production build with generated secrets</td></tr>
+  </table>
+</section>
+
+<section id="demo" data-part="2" data-cue="Demo data is opt-in">
+  <h2>Demo data is opt-in</h2>
+  <div class="cols">
+    <div class="card good"><h3>Set</h3><p><code>SELAH_DEMO_EMAIL</code> and <code>SELAH_DEMO_PASSWORD</code> in <code>.env.local</code>: Naomi Adler, 12 notes, 7 tags, as in the mocks</p></div>
+    <div class="card"><h3>Empty</h3><p>Nothing is seeded and no default password exists</p></div>
+  </div>
+</section>
+
+<section id="harness" data-part="3" data-cue="Slice zero has a problem">
+  <h2>The test harness</h2>
+  <ul>
+    <li><code>/harness/*</code> pages and <code>/api/harness/*</code> routes exercise the shell, drawer, toasts, banners, dialogs, forms, theme control and status pages</li>
+    <li>404 unless <code>SELAH_TEST_HARNESS=1</code>, which only the Playwright server sets</li>
+    <li>Test fixtures, not product screens: no mocks</li>
+    <li>Deleted once the real routes exist</li>
+  </ul>
+</section>
+
+<section id="status" data-part="4" data-cue="As of this slice, eleven L2 requirements are done">
+  <h2>Status after slice zero</h2>
+  <div class="cols four">
+    <div class="card good"><h3>11 done</h3><p class="small">theme · toasts · banners · credentials · request protection · in-memory data · responsive · drawer · dialogs · tokens · keyboard</p></div>
+    <div class="card"><h3>4 partial</h3><p class="small">status pages · validate every input · safe queries and output · performance</p></div>
+    <div class="card sky"><h3>2 started</h3><p class="small">authorise every operation · dummy hash</p></div>
+    <div class="card bad"><h3>33 remaining</h3><p class="small">auth 10 · notes 8 · tags and search 10 · account 5</p></div>
+  </div>
+</section>
+
+<section id="versions" data-part="5" data-cue="Stack versions: Next.js">
+  <h2>Decisions: versions</h2>
+  <div class="row">
+    <span class="tag">Next.js 15.5</span><span class="tag">React 19</span><span class="tag">Tailwind 3.4</span><span class="tag">Zod 4</span><span class="tag">TypeScript 5.9</span>
+    <span class="tag sky">ESLint 9</span><span class="tag sky">Vitest 5</span><span class="tag sky">Playwright 1.64</span><span class="tag forest">better-sqlite3 13</span>
+  </div>
+</section>
+
+<section id="scrypt" data-part="5" data-cue="The scrypt cost. The design said">
+  <h2>Decisions: the scrypt cost</h2>
+  <div class="cols">
+    <div class="card bad"><h3>Design</h3><p>N = 2<sup>15</sup>, p = 1: measured 65 ms, under the 100 ms floor of <code>L2-049.4</code></p></div>
+    <div class="card good"><h3>Implementation</h3><p>N = 2<sup>16</sup>, r = 8, p = 2: about 260 ms</p></div>
+  </div>
+</section>
+
+<section id="more" data-part="5" data-cue="A configuration error stops the server">
+  <h2>Decisions: the rest</h2>
+  <ul>
+    <li>A configuration error stops the server: <code>instrumentation.node.ts</code> exits with code 1</li>
+    <li>Phone top bar stays on the list, hidden on the editor; resolves the app-shell <code>&lt;TO SUPPLY&gt;</code></li>
+    <li>No web font loaded; CSP keeps <code>font-src 'self'</code></li>
+    <li><code>'unsafe-eval'</code> only when <code>NODE_ENV=development</code>; tests run the production build</li>
+  </ul>
+</section>
+
+<section id="recap" data-part="6" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>No code without a failing acceptance test; every test names its criterion</div>
+    <div>Slice zero: scaffold, data layer, shell, platform. 64 unit tests, Playwright on a production build</div>
+    <div>A test harness stands in for real screens, then gets deleted</div>
+    <div>11 done, 4 partial, 2 started, 33 remaining, each with evidence</div>
+    <div>Decisions recorded as made: versions, scrypt cost, top bar, policy</div>
+  </div>
+</section>
+
+<section id="next" data-part="6" data-cue="Next time: the remaining slices">
+  <div class="kicker">Next</div>
+  <h2>The remaining slices</h2>
+  <p class="lead">Auth, notes, tags and account, and then step fourteen: the demo videos.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

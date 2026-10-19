@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 05 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="05" data-video-title="HTML mocks" data-parts="Introduction|Why|Output|Cast|Tour|Decisions|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 05</div>
+  <h1>HTML mocks</h1>
+  <p class="lead">Step eight: the product on disk before the product exists.</p>
+</section>
+
+<section id="why" data-part="1" data-cue="Why mocks come first">
+  <h2>Mocks come before frontend code</h2>
+  <p class="quote">They are the product on disk before the product exists: everything after (design system, requirements, detailed designs, code) is derived from these files.</p>
+  <p class="small muted">docs/mocks/README.md</p>
+</section>
+
+<section id="output" data-part="2" data-cue="Step eight runs on Fable">
+  <h2>Step 8 · writing-html-mocks</h2>
+  <div class="cols four">
+    <div class="card"><h3>65</h3><p>HTML files</p></div>
+    <div class="card sky"><h3>16</h3><p>screens</p></div>
+    <div class="card forest"><h3>63</h3><p>states, light and dark</p></div>
+    <div class="card indoor"><h3>108 / 108</h3><p>contrast pairs pass</p></div>
+  </div>
+  <p class="lead">Model: Fable. Commit <code>c36b796</code>.</p>
+</section>
+
+<section id="screens" data-part="2" data-cue="The sixteen screens fall into three kinds">
+  <h2>Sixteen screens</h2>
+  <div class="cols three">
+    <div class="card">
+      <h3>8 pages</h3>
+      <p class="small">notes · note editor · sign in · sign up · account settings · not found · forbidden · something went wrong</p>
+    </div>
+    <div class="card sky">
+      <h3>5 dialogs</h3>
+      <p class="small">delete note · account menu · add tag · delete account · navigation drawer</p>
+    </div>
+    <div class="card forest">
+      <h3>3 notifications</h3>
+      <p class="small">toast · banner · save status</p>
+    </div>
+  </div>
+</section>
+
+<section id="states" data-part="2" data-cue="Every kind has required states">
+  <h2>Required states</h2>
+  <table class="grid">
+    <tr><th>Kind</th><th>Required states</th></tr>
+    <tr><td>Page</td><td>default · loading · empty · error</td></tr>
+    <tr><td>Dialog</td><td>default · busy · invalid</td></tr>
+    <tr><td>Notification</td><td>info · success · warning · danger</td></tr>
+  </table>
+  <p class="lead"><code>manifest.json</code> lists every screen and state, and says why when one does not apply.</p>
+</section>
+
+<section id="cast" data-part="3" data-cue="Every mock shares one person">
+  <h2>One cast, one workspace, one today</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>Naomi Adler</h3>
+      <ul>
+        <li>12 notes · 7 tags</li>
+        <li>Today: Friday 16 October 2026</li>
+      </ul>
+    </div>
+    <div class="card sky">
+      <h3>The notes everyone sees</h3>
+      <ul>
+        <li>Open: <em>Weekly sync — platform team</em></li>
+        <li>Deleted and undone: <em>Questions for the landlord</em></li>
+        <li>"priya": 2 matches · "quarterly budget": none</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="seed" data-part="3" data-cue="This is not decoration">
+  <h2>The same cast, later</h2>
+  <div class="flow">
+    <div class="node accent"><b>Mocks</b>Naomi Adler, 12 notes, 7 tags</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Specs and tests</b>quote the same titles and copy</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Demo seed</b>the running app looks like the mocks</div>
+  </div>
+</section>
+
+<section id="tour" data-part="4" data-cue="Here is what the mocks look like on screen" data-clip="clips/mocks-tour.mp4">
+  <div class="clip-notes">
+    <h3>The mocks</h3>
+    <ul>
+      <li>Gallery with live previews and state chips</li>
+      <li>Notes page, desktop layout</li>
+      <li><code>t</code> toggles light and dark</li>
+      <li>Delete dialog, focus on Cancel</li>
+      <li>Undo toast, 8 seconds</li>
+    </ul>
+  </div>
+</section>
+
+<section id="layout" data-part="5" data-cue="Layout: on desktop">
+  <h2>Layout decisions</h2>
+  <table class="grid">
+    <tr><th>Width</th><th>Layout</th></tr>
+    <tr><td>Desktop ≥ 1024 px</td><td>Sidebar · note list (320 px) · editor</td></tr>
+    <tr><td>Tablet 768–1023 px</td><td>Note list · editor; sidebar opens as a drawer</td></tr>
+    <tr><td>Phone &lt; 768 px</td><td>One screen at a time</td></tr>
+    <tr><td>&lt; 640 px</td><td>Dialogs become bottom sheets</td></tr>
+  </table>
+</section>
+
+<section id="visual" data-part="5" data-cue="Visuals: one indigo accent">
+  <h2>Visual and behaviour decisions</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>Visual</h3>
+      <ul>
+        <li>One indigo accent on cool greys</li>
+        <li>Borders over shadows</li>
+        <li>4 px spacing grid</li>
+        <li>14 px UI text, 16 px editor text</li>
+      </ul>
+    </div>
+    <div class="card forest">
+      <h3>Behaviour</h3>
+      <ul>
+        <li>One primary action per screen</li>
+        <li>Confirm once, then Undo for 8 seconds</li>
+        <li>Errors keep the chrome, carry a reference code, offer retry</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="recap" data-part="6" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>Mocks before frontend code: the product on disk before it exists</div>
+    <div>Fable: 65 files, 16 screens, 63 states, light and dark, 108 contrast pairs</div>
+    <div>Required states per kind; the manifest says why when one does not apply</div>
+    <div>One cast and workspace, shared by every mock and the demo seed</div>
+    <div>Layout, visual and behaviour decisions settled here, quoted later</div>
+  </div>
+</section>
+
+<section id="next" data-part="6" data-cue="Next time, step nine">
+  <div class="kicker">Next</div>
+  <h2>06 · Design system</h2>
+  <p class="lead">Tokens, foundations and forty-four components, extracted from the mocks.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

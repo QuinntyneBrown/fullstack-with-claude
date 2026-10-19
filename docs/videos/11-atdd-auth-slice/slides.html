@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 11 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="11" data-video-title="ATDD implementation: the auth slice" data-parts="Introduction|What was built|Requirements|Status|Decisions|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 11</div>
+  <h1>ATDD implementation: the auth slice</h1>
+  <p class="lead">Step thirteen, slice one: sign-up, sign-in, sign-out, sessions, route protection and expiry. As of October 2026.</p>
+</section>
+
+<section id="sessions" data-part="1" data-cue="Sessions. A sessions repository">
+  <h2>Sessions</h2>
+  <div class="cols">
+    <div class="card"><h3>Keyed-hash store</h3><p>HMAC-SHA-256 of a 32-byte random token; only the hash is stored. <code>lib/repositories/sessions.ts</code>, <code>lib/auth/session.ts</code></p></div>
+    <div class="card sky"><h3>Two windows</h3><p>2-hour inactivity · 7-day absolute</p></div>
+    <div class="card forest"><h3>Cookie</h3><p>HttpOnly · SameSite=Lax · Path=/ · Secure over HTTPS · 7-day Max-Age</p></div>
+  </div>
+  <p class="small muted"><code>startSession</code> · <code>endSession</code> · <code>getCurrentSession</code> · <code>requireUser</code> · <code>redirectIfSignedIn</code></p>
+</section>
+
+<section id="route" data-part="1" data-cue="The route wrapper gained authentication">
+  <h2>Two route wrappers</h2>
+  <div class="cols">
+    <div class="card"><h3><code>publicRoute()</code></h3><p>Health and the harness</p></div>
+    <div class="card good"><h3><code>route()</code></h3><p>Resolves the session first; 401 before the handler or any repository runs. Adds <code>X-Session-Expires-At</code> and <code>Cache-Control: no-store</code>. <code>{ touch: false }</code> for reads that must not extend the window.</p></div>
+  </div>
+</section>
+
+<section id="forms" data-part="1" data-cue="Sign-in and sign-up. Authenticate always verifies">
+  <h2>Sign-in and sign-up</h2>
+  <ul>
+    <li><code>authenticate</code> always verifies a hash and returns a generic result</li>
+    <li><code>registerAccount</code>: <code>UNIQUE (email_lower)</code> decides "taken"</li>
+    <li><code>safeNextPath</code> filters the return address</li>
+    <li><code>app/(public)/sign-in</code> and <code>sign-up</code>: Server Actions plus client forms with Zod validation first, busy and read-only in flight, retained fields, rejected and unreachable states</li>
+  </ul>
+</section>
+
+<section id="shell" data-part="1" data-cue="The real app shell">
+  <h2>The real shell, sign-out, expiry</h2>
+  <div class="cols">
+    <div class="card"><h3><code>app/(app)/</code></h3><p>Layout requires a session; <code>/notes</code> lists titles or the empty state; <code>/notes/[id]</code> and <code>/account</code> are protected placeholders</p></div>
+    <div class="card sky"><h3>Sign-out</h3><p><code>signOutAction</code>, <code>AccountMenu</code> as far as Sign out, <code>SwitchAccountButton</code> on the 403 page, <code>clearDeviceState</code></p></div>
+    <div class="card forest"><h3>Expiry</h3><p><code>GET /api/session</code>, <code>POST /api/session/extend</code>, <code>SessionWatcher</code>, <code>SessionEndingBanner</code>; countdown aria-hidden, minute-level message announced</p></div>
+  </div>
+</section>
+
+<section id="reqs1" data-part="2" data-cue="Ten auth requirements are in the slice">
+  <h2>Requirements: accounts and sign-in</h2>
+  <table class="grid small">
+    <tr><th>L2</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>L2-001 Create an account</td><td>Done (1-5)</td><td><code>sign-up.spec.ts</code>; lands on <code>/notes</code> empty with a welcome toast</td></tr>
+    <tr><td>L2-002 Sign-up validation</td><td>Done (1-6)</td><td>Focused summary, per-field messages, 80 and 128 limits</td></tr>
+    <tr><td>L2-003 Sign in</td><td>Done (1-4)</td><td><code>sign-in.spec.ts</code>; foreign <code>next</code> ignored</td></tr>
+    <tr><td>L2-004 Validation and rejection</td><td>Done (1-5)</td><td>Unknown email and wrong password identical; a hash is always computed</td></tr>
+    <tr><td>L2-005 Submitting and unreachable</td><td>Done (1-3)</td><td>Try again resubmits with retained fields</td></tr>
+  </table>
+</section>
+
+<section id="reqs2" data-part="2" data-cue="Sign out: the server session is invalidated">
+  <h2>Requirements: sessions</h2>
+  <table class="grid small">
+    <tr><th>L2</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>L2-006 Sign out</td><td>Done (1-4)</td><td><code>sign-out.spec.ts</code>; replayed cookie is 401</td></tr>
+    <tr><td>L2-007 Session lifetime and cookie</td><td>Done (1-5)</td><td><code>sessions.spec.ts</code>, <code>session</code> unit</td></tr>
+    <tr><td>L2-008 Route protection</td><td>Done (1-3)</td><td>Pages redirect with no data; API 401 with no body</td></tr>
+    <tr><td>L2-009 Session expiry handling</td><td>Done (1, 3, 4)</td><td><code>session-expiry.spec.ts</code>; criterion 2 waits for L2-015</td></tr>
+    <tr><td>L2-010 Session-ending warning</td><td>Done (1-4)</td><td>Banner 5 minutes before the end; no dismiss</td></tr>
+  </table>
+</section>
+
+<section id="moved" data-part="2" data-cue="Five slice-zero rows moved too">
+  <h2>Slice-zero rows that moved</h2>
+  <ul>
+    <li>L2-037 Status pages: criterion 5 done, "Switch account" signs out</li>
+    <li>L2-040 Credentials: hash-only re-verified for sign-up</li>
+    <li>L2-042 Request protection: cross-origin change with a valid session is 403</li>
+    <li>L2-043 Demo seed: a signed-up account has no notes, proven through the flow</li>
+    <li>L2-038 Validate every input: one Zod schema across client, Server Action and unit tests</li>
+  </ul>
+</section>
+
+<section id="counts" data-part="3" data-cue="The counts. Unit tests">
+  <h2>Tests after slice one</h2>
+  <div class="cols">
+    <div class="card good"><h3>95 unit</h3><p>27 new: <code>session</code> 16, <code>sign-up</code> 6, <code>sign-in</code> 5</p></div>
+    <div class="card sky"><h3>167 acceptance</h3><p>51 new definitions: sign-up 12, sign-in 11, sessions 11, session-expiry 10, sign-out 7</p></div>
+    <div class="card"><h3>Clean</h3><p>typecheck and lint</p></div>
+  </div>
+</section>
+
+<section id="status" data-part="3" data-cue="By requirement, out of forty-nine">
+  <h2>Status after slice one</h2>
+  <div class="cols four">
+    <div class="card good"><h3>21 done</h3><p class="small">11 from slice zero · auth L2-001 to 008 and 010 · status pages</p></div>
+    <div class="card"><h3>1 + 3</h3><p class="small">session expiry (criterion 2 deferred) · validate every input · safe queries · performance</p></div>
+    <div class="card sky"><h3>1 started</h3><p class="small">authorise every operation</p></div>
+    <div class="card bad"><h3>23 remaining</h3><p class="small">notes 8 · tags and search 10 · account 5</p></div>
+  </div>
+</section>
+
+<section id="redirect" data-part="4" data-cue="Protected pages are redirected by require user">
+  <h2>Decisions: who redirects, who navigates</h2>
+  <div class="cols">
+    <div class="card"><h3><code>requireUser</code>, not the middleware</h3><p>Next rewrote a middleware redirect's host to <code>localhost</code>, cross-origin, tripping <code>connect-src 'self'</code> on a prefetch. A relative <code>redirect()</code> stays same-origin.</p></div>
+    <div class="card sky"><h3>Actions return, the client navigates</h3><p><code>{ status: "ok", redirect }</code> then <code>window.location.assign</code>; an aborted POST shows the unreachable state instead of an error boundary.</p></div>
+  </div>
+</section>
+
+<section id="aging" data-part="4" data-cue="Session windows are configurable">
+  <h2>Decisions: proving time without waiting</h2>
+  <div class="cols">
+    <div class="card"><h3>A harness ages sessions</h3><p><code>POST /api/harness/session/age</code> moves <code>created_at</code> and <code>last_seen_at</code> into the past; <code>SESSION_INACTIVITY_MS</code>, <code>SESSION_ABSOLUTE_MS</code></p></div>
+    <div class="card forest"><h3>Relative <code>expiresIn</code></h3><p>The watcher computes <code>expiresAt = Date.now() + expiresIn</code>, so a controlled browser clock and a real server clock agree</p></div>
+  </div>
+</section>
+
+<section id="rest" data-part="4" data-cue="The account menu is built only as far as sign out">
+  <h2>Decisions: the rest</h2>
+  <ul>
+    <li>Account menu built as far as Sign out; Appearance and the rest of L2-029 are the account slice</li>
+    <li>Sidebar trigger has no <code>aria-label</code>: visible and accessible names match (WCAG 2.5.3)</li>
+    <li><code>TextField</code> accepts a <code>ReactNode</code> error and help text, so a field message can hold a link</li>
+    <li>Two slice-zero assertions made deterministic: salt tamper, random token digit</li>
+  </ul>
+</section>
+
+<section id="recap" data-part="5" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>Slice one is auth: sessions, the authenticated wrapper, sign-in and sign-up, the real shell, sign-out and expiry</div>
+    <div>Sessions: keyed hash of a random token, 2 hours inactivity, 7 days absolute, HttpOnly cookie</div>
+    <div>Rejection is generic and a hash is always computed</div>
+    <div>95 unit and 167 acceptance tests pass; 21 done, 23 remaining</div>
+    <div>Decisions recorded as the code forced them: who redirects, who navigates, how a test ages a session</div>
+  </div>
+</section>
+
+<section id="next" data-part="5" data-cue="Next time: the remaining slices">
+  <div class="kicker">Next</div>
+  <h2>The remaining slices</h2>
+  <p class="lead">Notes, tags and search, and account, and then step fourteen: the demo videos.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

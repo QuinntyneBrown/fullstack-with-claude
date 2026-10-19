@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 09 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="09" data-video-title="Estimates" data-parts="Introduction|Output|Evidence|Roadmap|Decision|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 09</div>
+  <h1>Estimates</h1>
+  <p class="lead">Step twelve: ninety-nine developer-days, and a decision about scope.</p>
+</section>
+
+<section id="output" data-part="1" data-cue="Step twelve runs on Sonnet with low effort">
+  <h2>Step 12 · estimating-designs</h2>
+  <div class="cols">
+    <div class="card"><h3>99 days</h3><p>overall effort</p></div>
+    <div class="card sky"><h3>0%</h3><p>complete</p></div>
+  </div>
+  <p class="lead"><code>docs/estimates/</code>: a root README plus one file per subsystem. Model: Sonnet, low effort. Commit <code>7bc534b</code>.</p>
+</section>
+
+<section id="subsystems" data-part="1" data-cue="By subsystem: platform">
+  <h2>By subsystem</h2>
+  <table class="grid">
+    <tr><th>Subsystem</th><th>Effort</th><th>Complete</th></tr>
+    <tr><td>platform</td><td>34 days</td><td>0%</td></tr>
+    <tr><td>auth</td><td>20 days</td><td>0%</td></tr>
+    <tr><td>notes</td><td>18 days</td><td>0%</td></tr>
+    <tr><td>tags-and-search</td><td>17 days</td><td>0%</td></tr>
+    <tr><td>account</td><td>10 days</td><td>0%</td></tr>
+  </table>
+</section>
+
+<section id="notes" data-part="1" data-cue="And inside a subsystem, one line per design">
+  <h2>Inside a subsystem: notes</h2>
+  <table class="grid">
+    <tr><th>Design</th><th>Effort</th><th>Complete</th></tr>
+    <tr><td>create-and-open-note</td><td>5 days</td><td>0%</td></tr>
+    <tr><td>delete-and-undo</td><td>4 days</td><td>0%</td></tr>
+    <tr><td>edit-and-autosave</td><td>4 days</td><td>0%</td></tr>
+    <tr><td>offline-device-copy</td><td>5 days</td><td>0%</td></tr>
+  </table>
+</section>
+
+<section id="evidence" data-part="2" data-cue="Two things make these estimates more than a guess">
+  <h2>Evidence, not opinion</h2>
+  <div class="cols">
+    <div class="card"><h3>Per design</h3><p>A design is a parts list. Delete and undo is 4 days because of what it contains.</p></div>
+    <div class="card forest"><h3>Evidence-based percent</h3><p>What exists in the repo against what the design asks for. Refreshed as code lands.</p></div>
+  </div>
+</section>
+
+<section id="roadmap" data-part="3" data-cue="The README closes with a five-phase roadmap">
+  <h2>Roadmap</h2>
+  <ol class="steps">
+    <li>Platform foundations: in-memory-data, app-shell, theming, dialogs, notifications, status-pages</li>
+    <li>Auth: sign-up, sign-in, sessions-and-sign-out, session-expiry, credentials-and-secrets</li>
+    <li>Platform guards: access-control, request-protection, input-and-output-safety</li>
+    <li>Notes: create-and-open-note, edit-and-autosave, delete-and-undo, then tags-and-search</li>
+    <li>Account, offline-device-copy, accessibility and performance</li>
+  </ol>
+</section>
+
+<section id="line" data-part="4" data-cue="Ninety-nine days is far over the line">
+  <h2>Far over the line</h2>
+  <div class="cols three">
+    <div class="card"><h3>99 days</h3><p>estimated</p></div>
+    <div class="card sky"><h3>~15 days</h3><p>the line for a small notes app</p></div>
+    <div class="card indoor"><h3>~27 days</h3><p>descope candidates: offline copy, session expiry, delete account, others</p></div>
+  </div>
+</section>
+
+<section id="decision" data-part="4" data-cue="The decision was to keep all twenty-eight designs">
+  <h2>The decision</h2>
+  <p class="quote">Keep all 28 designs.</p>
+  <ul>
+    <li>A reference app's purpose is coverage: every layer, every state, every guard</li>
+    <li>Made with the number in view, before any code</li>
+    <li>Written down in the process log</li>
+  </ul>
+</section>
+
+<section id="recap" data-part="5" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>Sonnet, low effort: 28 designs at 99 developer-days across 5 subsystems</div>
+    <div>Per design, and a design is a parts list, so the number has a reason</div>
+    <div>Percent complete is evidence-based and refreshed as code lands; today 0%</div>
+    <div>Roadmap follows dependencies: platform, auth, guards, notes, account</div>
+    <div>99 days forced a scope decision; everything kept, with the number in view</div>
+  </div>
+</section>
+
+<section id="next" data-part="5" data-cue="Next time, step thirteen">
+  <div class="kicker">Next</div>
+  <h2>10 · ATDD implementation: slice zero</h2>
+  <p class="lead">Acceptance tests first, one criterion at a time.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

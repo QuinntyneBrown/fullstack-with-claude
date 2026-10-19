@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 04 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="04" data-video-title="Agent files and a fresh session" data-parts="Introduction|Agent files|Instructions|Fresh session|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 04</div>
+  <h1>Agent files and a fresh session</h1>
+  <p class="lead">Steps six and seven: one file every agent reads, and proof that a new session reads it.</p>
+</section>
+
+<section id="step6" data-part="1" data-cue="Step six runs on Sonnet 5.5">
+  <h2>Step 6 · writing-agent-instructions</h2>
+  <div class="flow">
+    <div class="node"><b>Description</b>name · product · stack · look · workflow · guardrails · folders</div>
+    <div class="arrow">→</div>
+    <div class="node ext"><b>Sonnet 5.5</b><small>writing-agent-instructions</small></div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>AGENTS.md</b><small>+ 3 pointers</small></div>
+  </div>
+</section>
+
+<section id="budget" data-part="1" data-cue="The output is four files">
+  <h2>Four files</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>AGENTS.md</h3>
+      <p>125 lines, under the 150-line budget. It rides along with every agent turn, so short is a feature.</p>
+    </div>
+    <div class="card sky">
+      <h3>Three pointers</h3>
+      <ul>
+        <li><code>CLAUDE.md</code>: <code>@AGENTS.md</code></li>
+        <li><code>GEMINI.md</code></li>
+        <li><code>.github/copilot-instructions.md</code></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="pointer" data-part="1" data-cue="The other three are pointers">
+  <h2>A pointer file</h2>
+  <pre class="code" data-lang="md" data-file="GEMINI.md">Read [AGENTS.md](./AGENTS.md) at the repository root before working in this repository.
+It is the single source of guidance; this file adds nothing of its own.</pre>
+  <p class="lead">One source, three pointers, nothing to keep in sync. Commit <code>f7e7eaa</code>.</p>
+</section>
+
+<section id="sections" data-part="2" data-cue="has nine sections">
+  <h2>Nine sections</h2>
+  <div class="cols">
+    <ol class="steps">
+      <li>Purpose</li>
+      <li>Speed Is Not the Goal</li>
+      <li>Technology</li>
+      <li>Architecture and Design</li>
+      <li>Data and Security (non-negotiable)</li>
+    </ol>
+    <ol class="steps" style="counter-reset: step 5">
+      <li>Look and Feel</li>
+      <li>Workflow - Spec-Driven</li>
+      <li>Testing Approach</li>
+      <li>Folder Structure</li>
+    </ol>
+  </div>
+</section>
+
+<section id="security" data-part="2" data-cue="Data and Security says">
+  <h2>Data and Security (non-negotiable)</h2>
+  <pre class="code tight" data-lang="md" data-file="AGENTS.md">- Zod-validate every input at every boundary: request bodies, query strings, route
+  params, and Server Action form data.
+- Parameterised SQL only, with `?` or named placeholders. Never build SQL by string
+  concatenation or template interpolation, including `LIKE` search terms.
+- All SQL lives in `lib/repositories/`. Nothing else touches `lib/db.ts` directly.
+- Never store or log a plaintext password. Hash with scrypt (Node `crypto`) or
+  bcrypt, with a per-user salt, and compare in constant time.
+- No secrets in the repo: no keys, tokens, or credentials in source, tests, fixtures,
+  or docs. Read configuration from environment variables.
+- Authorise every note query by the signed-in user. A user must never read, edit,
+  delete, or search another user's notes.
+- Return generic errors for failed sign-in; do not reveal whether an email exists.</pre>
+</section>
+
+<section id="workflow" data-part="2" data-cue="Workflow says">
+  <h2>Workflow, spec-driven</h2>
+  <div class="flow">
+    <div class="node"><b>Mocks</b><small>docs/mocks/</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Design system</b><small>docs/design-system/</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Specs</b><small>docs/specs/</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Designs</b><small>docs/detailed-designs/</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Estimates</b><small>docs/estimates/</small></div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>ATDD</b><small>one criterion at a time</small></div>
+  </div>
+  <p class="quote">Do not skip ahead. Mocks come before frontend code.</p>
+</section>
+
+<section id="testing" data-part="2" data-cue="Testing Approach says">
+  <h2>Testing approach</h2>
+  <ol class="steps">
+    <li>Write a Playwright test linked to a Given-When-Then criterion in <code>docs/specs/</code></li>
+    <li>Watch it fail for the right reason</li>
+    <li>Implement until it passes, then refactor</li>
+  </ol>
+  <p class="lead">Page objects own the selectors; tests state intent. Never write architecture tests.</p>
+</section>
+
+<section id="step7" data-part="3" data-cue="Step seven is the proof">
+  <h2>Step 7 · A fresh session</h2>
+  <pre class="code tight" data-lang="sh">C:\projects\selah&gt; claude -p "In two short bullet lists: (1) the names of the skills
+  available to you in this project, (2) a one-sentence summary of AGENTS.md.
+  Do not use tools." --model sonnet</pre>
+  <p class="lead">Result: the project's skills, and a summary of AGENTS.md: Selah, Next.js, in-memory SQLite, spec-driven order, security rules.</p>
+</section>
+
+<section id="notools" data-part="3" data-cue="The important words are">
+  <h2>"Do not use tools"</h2>
+  <div class="cols">
+    <div class="card bad"><h3>With tools</h3><p>The model could open the files and read them back. Proves nothing.</p></div>
+    <div class="card good"><h3>Without tools</h3><p>Whatever it knows, the session loaded at start. The instructions are in context.</p></div>
+  </div>
+</section>
+
+<section id="recap" data-part="4" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div><code>AGENTS.md</code>: 125 lines under a 150 budget, because it rides along with every turn</div>
+    <div>Three pointer files, one source, nothing drifts</div>
+    <div>Non-negotiables: validate inputs, parameterised SQL, hashed passwords, no secrets, authorise every query</div>
+    <div>Order: mocks, design system, specs, designs, estimates, ATDD. No code without a failing test</div>
+    <div>Step 7: a fresh session with tools off already knows the skills and the rules</div>
+  </div>
+</section>
+
+<section id="next" data-part="4" data-cue="Next time, step eight">
+  <div class="kicker">Next</div>
+  <h2>05 · HTML mocks</h2>
+  <p class="lead">Written by Fable: every page, dialog and notification, in every state.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

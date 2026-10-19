@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 06 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="06" data-video-title="Design system" data-parts="Introduction|Why|Output|Tokens|Components|Tour|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 06</div>
+  <h1>Design system</h1>
+  <p class="lead">Step nine: the mocks, written down as tokens, foundations and components.</p>
+</section>
+
+<section id="why" data-part="1" data-cue="Why extract, and why now">
+  <h2>The source of truth</h2>
+  <p class="quote">No ad-hoc colours, font stacks, or one-off spacing values. A hex code, rgb(), or arbitrary-value colour class in a component is a defect: add the missing token to the design system first.</p>
+  <p class="small muted">AGENTS.md · Look and Feel</p>
+</section>
+
+<section id="between" data-part="1" data-cue="That rule only works if">
+  <h2>Between the mocks and the specs</h2>
+  <div class="flow">
+    <div class="node"><b>Mocks</b>decisions, contrast checked</div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>Design system</b>every value under a name</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Specs, designs, code</b>refer to the name</div>
+  </div>
+</section>
+
+<section id="output" data-part="2" data-cue="Step nine runs on Sonnet with low effort">
+  <h2>Step 9 · extracting-design-systems</h2>
+  <div class="cols four">
+    <div class="card"><h3>65</h3><p>pages: 12 foundations, 44 components, 8 patterns</p></div>
+    <div class="card sky"><h3>254</h3><p>tokens</p></div>
+    <div class="card forest"><h3>134 / 134</h3><p>contrast pairs pass</p></div>
+    <div class="card indoor"><h3>DTCG</h3><p><code>tokens.json</code></p></div>
+  </div>
+  <p class="lead">Model: Sonnet, low effort. Commit <code>4cb8744</code>.</p>
+</section>
+
+<section id="foundations" data-part="2" data-cue="The twelve foundations are">
+  <h2>Foundations and patterns</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>12 foundations</h3>
+      <p class="small">color · typography · spacing · layout · elevation · shape · motion · iconography · theming · responsive · accessibility · content</p>
+    </div>
+    <div class="card sky">
+      <h3>8 patterns</h3>
+      <p class="small">content tone · data tables and lists · dialogs and overlays · empty and error states · feedback and loading · forms · navigation and page structure · notifications</p>
+    </div>
+  </div>
+</section>
+
+<section id="tiers" data-part="3" data-cue="Tokens come in three tiers">
+  <h2>Three tiers</h2>
+  <div class="layers">
+    <div class="l1"><b>Primitives</b><span><code>--palette-*</code>, <code>--font-*</code>: raw values, never used directly by components</span></div>
+    <div class="l3"><b>Semantic</b><span><code>--color-*</code>, <code>--text-*</code>, <code>--space-*</code>, <code>--radius-*</code>, <code>--shadow-*</code>…: what components consume; themes override these</span></div>
+    <div class="l4"><b>Component</b><span><code>--btn-*</code>, <code>--field-*</code>: always alias a semantic token</span></div>
+  </div>
+</section>
+
+<section id="primitives" data-part="3" data-cue="The primitives carry their reasons too">
+  <h2>Primitives with reasons</h2>
+  <pre class="code" data-lang="css" data-file="docs/design-system/tokens/tokens.css" data-mark="4,5">  --palette-gray-300: #cdd2da;
+  --palette-gray-400: #a6adba;
+  --palette-gray-450: #878f9d;   /* 3:1 on white and canvas: control edges */
+  --palette-gray-500: #667080;   /* 4.5:1 on white and canvas: metadata */
+  --palette-gray-600: #5b6370;
+  --palette-gray-700: #434a56;</pre>
+  <p class="lead">4.5:1 and 3:1 are the WCAG 2.2 AA thresholds; <code>contrast-pairs.json</code> checks every foreground on every background it sits on.</p>
+</section>
+
+<section id="page" data-part="4" data-cue="Every one of the forty-four component pages">
+  <h2>Every component page</h2>
+  <div class="cols three">
+    <div class="card"><p class="small">overview · anatomy · variants · sizes · states (both themes)</p></div>
+    <div class="card sky"><p class="small">responsive · theming · accessibility · content · do and don't</p></div>
+    <div class="card forest"><p class="small">tokens · code · sources</p></div>
+  </div>
+  <table class="grid small">
+    <tr><th>Component</th><th>Source mocks</th></tr>
+    <tr><td>Button</td><td>notes/default, note/default, sign-in/submitting</td></tr>
+    <tr><td>Dialog</td><td>dialogs/delete-note/default, busy, failed</td></tr>
+    <tr><td>Badge, List, Table…</td><td>core set: no mock uses them yet</td></tr>
+  </table>
+</section>
+
+<section id="tour" data-part="5" data-cue="Here is the design system on screen" data-clip="clips/design-system-tour.mp4">
+  <div class="clip-notes">
+    <h3>The design system</h3>
+    <ul>
+      <li>Index: foundations, components, patterns</li>
+      <li>Button: anatomy, variants, states</li>
+      <li>Color: ramps and roles</li>
+    </ul>
+  </div>
+</section>
+
+<section id="recap" data-part="6" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>The design system is the source of truth; a raw colour in a component is a defect</div>
+    <div>Sonnet, low effort: 65 pages, 254 tokens, 134 contrast pairs passing</div>
+    <div>Three tiers: primitives, semantic, component</div>
+    <div>Every component page has the same sections and cites its mocks</div>
+  </div>
+</section>
+
+<section id="next" data-part="6" data-cue="Next time, step ten">
+  <div class="kicker">Next</div>
+  <h2>07 · Specs</h2>
+  <p class="lead">Eleven high-level requirements, forty-nine detailed, two hundred and eighty-one acceptance criteria.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

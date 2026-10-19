@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 07 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="07" data-video-title="Specs" data-parts="Introduction|Why|Output|L1|L2|Tests|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 07</div>
+  <h1>Specs</h1>
+  <p class="lead">Step ten: eleven high-level requirements, forty-nine detailed, two hundred and eighty-one acceptance criteria.</p>
+</section>
+
+<section id="why" data-part="1" data-cue="Why specs after mocks">
+  <h2>Specs after mocks</h2>
+  <p class="quote">These requirements are derived from AGENTS.md and the HTML mocks in docs/mocks/ (manifest.json lists every screen and state).</p>
+  <p class="small muted">docs/specs/L1.md</p>
+</section>
+
+<section id="concrete" data-part="1" data-cue="Because the mocks already exist">
+  <h2>Every requirement points at a screen</h2>
+  <ul>
+    <li>Names the states it covers</li>
+    <li>Quotes the real copy: titles, button labels, messages</li>
+    <li>Says what is disabled, and where focus starts</li>
+  </ul>
+  <p class="lead">Concrete enough to test.</p>
+</section>
+
+<section id="output" data-part="2" data-cue="Step ten runs on Sonnet with low effort">
+  <h2>Step 10 · writing-requirements</h2>
+  <div class="cols three">
+    <div class="card"><h3>11</h3><p>L1 requirements · <code>L1.md</code></p></div>
+    <div class="card sky"><h3>49</h3><p>L2 requirements · <code>L2.md</code></p></div>
+    <div class="card forest"><h3>281</h3><p>acceptance criteria</p></div>
+  </div>
+  <p class="lead">Model: Sonnet, low effort. Commit <code>97c3c62</code>. "Shall" for mandatory behaviour.</p>
+</section>
+
+<section id="l1" data-part="3" data-cue="The eleven L1 requirements are the whole product">
+  <h2>Level one: the product in eleven sentences</h2>
+  <div class="cols">
+    <ol class="steps">
+      <li>Sign up, sign in and sign out</li>
+      <li>Session lifecycle</li>
+      <li>Write and manage notes</li>
+      <li>Tag notes</li>
+      <li>Browse and search notes</li>
+      <li>Manage the account</li>
+    </ol>
+    <ol class="steps" style="counter-reset: step 6">
+      <li>Clear feedback in every state</li>
+      <li>Security and privacy</li>
+      <li>Demo data</li>
+      <li>Responsive, themed and accessible</li>
+      <li>Performance</li>
+    </ol>
+  </div>
+</section>
+
+<section id="l1-two" data-part="3" data-cue="Two of them are worth hearing in full">
+  <h2>Straight from the idea</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>L1-009 Demo data</h3>
+      <p>Because Selah is a reference app, data shall live in memory, be seeded at startup, reset on every restart, and the app shall say so.</p>
+    </div>
+    <div class="card sky">
+      <h3>L1-011 Performance</h3>
+      <p>Common actions shall feel immediate on a workspace of over one thousand notes.</p>
+    </div>
+  </div>
+</section>
+
+<section id="l2" data-part="4" data-cue="Take L2 sixteen, delete a note">
+  <h2>L2-016 · Delete a note</h2>
+  <div class="row">
+    <span class="tag">Traces to L1-003</span>
+    <span class="tag sky">dialogs/delete-note: default · busy · failed</span>
+    <span class="tag forest">6 acceptance criteria</span>
+  </div>
+  <pre class="code tight" data-lang="md" data-file="docs/specs/L2.md">1. Given an open note, when "Delete note" is chosen, then a dialog titled `Delete "&lt;note title&gt;"?`
+   opens, reads "The note and its n tags are removed from your list. You'll have 8 seconds to undo.",
+   has Cancel and a "Delete note" danger button, and initial focus is on Cancel.
+3. Given the person confirms, when the request is in flight, then the danger button reads
+   "Deleting…", is disabled, and Cancel is disabled.
+5. Given the request fails, when it fails, then the dialog stays open with "Couldn't delete the note"
+   and "The server didn't respond. The note is still in your list.", and the button reads "Try again".
+6. Given a note with no tags, when the dialog opens, then it does not mention tags.</pre>
+</section>
+
+<section id="assert" data-part="4" data-cue="Every one of those is a sentence a Playwright test can assert">
+  <h2>Assertable</h2>
+  <div class="cols four">
+    <div class="card"><h3>A title</h3><p class="small">Delete "…"?</p></div>
+    <div class="card sky"><h3>A label</h3><p class="small">Deleting… · Try again</p></div>
+    <div class="card forest"><h3>A state</h3><p class="small">disabled</p></div>
+    <div class="card indoor"><h3>A focus</h3><p class="small">on Cancel</p></div>
+  </div>
+  <p class="lead">Every string was already on screen in the mocks.</p>
+</section>
+
+<section id="handoff" data-part="5" data-cue="This is the handoff that makes ATDD work">
+  <h2>Criteria are the backlog</h2>
+  <div class="flow">
+    <div class="node"><b>L2-016</b><small>6 criteria</small></div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>L2-016.1</b>one criterion</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>A failing test</b>names the criterion it proves</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Code</b>until it passes</div>
+  </div>
+</section>
+
+<section id="recap" data-part="6" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>Specs after mocks: every requirement points at a real screen and quotes real copy</div>
+    <div>Sonnet, low effort: 11 L1, 49 L2, 281 criteria in two files</div>
+    <div>L1 is the product in eleven sentences; L2 traces to L1 and names mock states</div>
+    <div>Given, when, then: every criterion is something a test can assert</div>
+    <div>The criteria are the ATDD backlog; each test names the one it proves</div>
+  </div>
+</section>
+
+<section id="next" data-part="6" data-cue="Next time, step eleven">
+  <div class="kicker">Next</div>
+  <h2>08 · Detailed designs</h2>
+  <p class="lead">Twenty-eight designs and one hundred and sixty diagrams.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

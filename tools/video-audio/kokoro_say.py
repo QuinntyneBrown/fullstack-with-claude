@@ -20,6 +20,36 @@ for name in ("kokoro-v1.0.onnx", "voices-v1.0.bin"):
 
 voice, out = sys.argv[1], sys.argv[2]
 text = sys.stdin.buffer.read().decode("utf-8")
-kokoro = Kokoro(str(cache / "kokoro-v1.0.onnx"), str(cache / "voices-v1.0.bin"))
-samples, rate = kokoro.create(text, voice=voice, speed=1.0, lang="en-us")
+# No CPU memory arena: onnxruntime otherwise reserves memory in large doubling chunks, which
+# fails on a machine that is low on memory even when the clip itself would fit.
+import onnxruntime as ort
+
+options = ort.SessionOptions()
+options.enable_cpu_mem_arena = False
+session = ort.InferenceSession(str(cache / "kokoro-v1.0.onnx"), sess_options=options, providers=["CPUExecutionProvider"])
+kokoro = Kokoro.from_session(session, str(cache / "voices-v1.0.bin"))
+
+def synth(chunk):
+    return kokoro.create(chunk, voice=voice, speed=1.0, lang="en-us")
+
+
+try:
+    samples, rate = synth(text)
+except Exception as first_error:  # noqa: BLE001
+    # onnxruntime allocates one decoder buffer per batch, and on a machine that is low on
+    # memory a whole paragraph can fail to allocate. Fall back to one batch per sentence,
+    # joined with a short pause, which needs a fraction of the memory.
+    import re
+
+    import numpy as np
+
+    sentences = [s for s in re.split(r"(?<=[.!?:;])\s+", text.strip()) if s]
+    if len(sentences) < 2:
+        raise first_error
+    parts, rate = [], None
+    for sentence in sentences:
+        audio, rate = synth(sentence)
+        parts.append(audio)
+        parts.append(np.zeros(int(rate * 0.3), dtype=audio.dtype))
+    samples = np.concatenate(parts[:-1])
 sf.write(out, samples, rate)

@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 12 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="12" data-video-title="ATDD implementation: the notes slice" data-parts="Introduction|What was built|Requirements|Status|Decisions|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 12</div>
+  <h1>ATDD implementation: the notes slice</h1>
+  <p class="lead">Step thirteen, slice two: create, open, edit, autosave, delete, undo, copy and device retention. As of October 2026.</p>
+</section>
+
+<section id="data" data-part="1" data-cue="The data layer. The notes repository">
+  <h2>The data layer</h2>
+  <div class="cols">
+    <div class="card"><h3><code>lib/repositories/notes.ts</code></h3><p><code>create</code> · <code>access</code> · <code>findById</code> · <code>update</code> · <code>softDelete</code> · <code>deletedAccess</code> · <code>restore</code> · <code>finalizeDelete</code> · <code>purgeExpired</code></p></div>
+    <div class="card sky"><h3>One statement, newest revision wins</h3><p><code>UPDATE … WHERE … AND ? &gt; client_rev</code></p></div>
+    <div class="card forest"><h3>Soft delete</h3><p>Restore only within 8,000 ms; every write purges expired rows; every read filters <code>deleted_at IS NULL</code></p></div>
+  </div>
+  <p class="small muted"><code>lib/notes.ts</code>: <code>requireOwnedNote</code>, <code>NotePayload</code> · <code>lib/time.ts</code>: relative times</p>
+</section>
+
+<section id="endpoints" data-part="1" data-cue="The endpoints. Create, read, patch">
+  <h2>The note endpoints</h2>
+  <ul>
+    <li><code>POST /api/notes</code>; <code>GET</code>, <code>PATCH</code>, <code>DELETE /api/notes/:id</code></li>
+    <li><code>POST /api/notes/:id/restore</code> and <code>DELETE /api/notes/:id/deletion</code></li>
+    <li>All on the authenticated <code>route()</code>, validated by <code>noteCreateSchema</code>, <code>notePatchSchema</code>, <code>noteIdParamsSchema</code></li>
+    <li>403 foreign · 404 missing or deleted · 404 for another account's deleted ids</li>
+  </ul>
+</section>
+
+<section id="store" data-part="1" data-cue="The workspace store. A client context">
+  <h2>The workspace store</h2>
+  <div class="cols">
+    <div class="card"><h3><code>components/notes/workspace.tsx</code></h3><p>Visible note list, all-notes count and tag counts on the client; seeded by the signed-in layout</p></div>
+    <div class="card good"><h3>One store, no reload</h3><p>Sidebar, list and editor update together</p></div>
+  </div>
+</section>
+
+<section id="screens" data-part="1" data-cue="The screens. The list renders">
+  <h2>The list and the editor</h2>
+  <div class="cols">
+    <div class="card"><h3>List rows</h3><p>Title or "Untitled note", two-line snippet, tag chips, relative time; open note marked current</p></div>
+    <div class="card sky"><h3>New note</h3><p>Sidebar, list header, empty state; the <code>N</code> key</p></div>
+    <div class="card forest"><h3>Editor</h3><p>Title 200 · text 100,000 · save status · Copy · Delete · device-copy offer · word count and times</p></div>
+  </div>
+</section>
+
+<section id="autosave" data-part="1" data-cue="Autosave and device retention. An autosave">
+  <h2>Autosave and device retention</h2>
+  <div class="cols">
+    <div class="card"><h3><code>AutosaveController</code></h3><p>800 ms debounce · flush on blur, pagehide, visibility · one in flight plus one trailing save · 2, 4, 8 s backoff then Retry · no retry on 400</p></div>
+    <div class="card sky"><h3><code>DeviceCopyStore</code></h3><p>Keyed by account and note; cleared on sign-out; a 401 keeps the text and hands over to session expiry</p></div>
+  </div>
+  <p class="small muted"><code>POST /api/harness/seed</code> · <code>docs/mocks/pages/note/device-copy.html</code></p>
+</section>
+
+<section id="reqs1" data-part="2" data-cue="Eight notes requirements are in the slice">
+  <h2>Requirements: create, open, edit, autosave</h2>
+  <table class="grid small">
+    <tr><th>L2</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>L2-011 Create a note</td><td>Done (1-5)</td><td><code>notes-create-open.spec.ts</code>; lists first as "Untitled note"; two activations, two notes</td></tr>
+    <tr><td>L2-012 Open a note</td><td>Done (1-5)</td><td>Skeleton only after 300 ms; error panel with <code>req_...</code></td></tr>
+    <tr><td>L2-013 Edit title and text</td><td>Done (1-4)</td><td><code>notes-autosave.spec.ts</code>; 201st title character refused, 400 on the server</td></tr>
+    <tr><td>L2-014 Autosave and save status</td><td>Done (1-8)</td><td>800 ms, backoff, polite live region, newer save wins</td></tr>
+  </table>
+</section>
+
+<section id="reqs2" data-part="2" data-cue="Offline and device retention: offline shows">
+  <h2>Requirements: offline, delete, undo, copy</h2>
+  <table class="grid small">
+    <tr><th>L2</th><th>Status</th><th>Evidence</th></tr>
+    <tr><td>L2-015 Offline and device retention</td><td>Done (1-5)</td><td><code>notes-offline.spec.ts</code>; copy offered when newer than the server</td></tr>
+    <tr><td>L2-016 Delete a note</td><td>Done (1-6)</td><td><code>notes-delete-undo.spec.ts</code>; Cancel focused; busy ignores Escape</td></tr>
+    <tr><td>L2-017 Undo a deletion</td><td>Done (1-6)</td><td>8-second toast; 404 after the window</td></tr>
+    <tr><td>L2-018 Copy a note as text</td><td>Done (1-3)</td><td>Title, blank line, text; empty title copies as "Untitled note"</td></tr>
+  </table>
+</section>
+
+<section id="moved" data-part="2" data-cue="Eight other rows moved">
+  <h2>Rows that moved</h2>
+  <ul class="small">
+    <li>L2-009 session expiry: criterion 2 done</li>
+    <li>L2-027 empty workspace: criteria 2 and 3 done</li>
+    <li>L2-037 status pages re-verified with real note ids</li>
+    <li>L2-038 validation and L2-041 safe output advanced</li>
+    <li>L2-039 authorisation: 1, 2, 4, 5 done</li>
+    <li>L2-044 and L2-048 extended to the real screens</li>
+    <li>L2-049 performance: save under 200 ms p95 over 100 calls at 1,284 notes; at most one request per 800 ms</li>
+  </ul>
+</section>
+
+<section id="status" data-part="3" data-cue="One hundred and thirty-two unit tests pass">
+  <h2>Status after slice two</h2>
+  <div class="cols">
+    <div class="card good"><h3>132</h3><p>unit tests (37 new)</p></div>
+    <div class="card good"><h3>219</h3><p>acceptance tests (51 new definitions)</p></div>
+  </div>
+  <p class="small muted">Remaining: tags and search (L2-019 to L2-028) · account (L2-029 to L2-032, L2-034)</p>
+</section>
+
+<section id="decisions1" data-part="4" data-cue="Six decisions are recorded">
+  <h2>Decisions: delete and revisions</h2>
+  <div class="cols">
+    <div class="card"><h3>Soft delete, 8-second window</h3><p>Excluded from every read at once; a note is created the moment you press New note</p></div>
+    <div class="card sky"><h3>Monotonic revision</h3><p><code>rev = max(previous + 1, Date.now())</code>; the server applies a save only when <code>rev &gt; client_rev</code></p></div>
+  </div>
+</section>
+
+<section id="decisions2" data-part="4" data-cue="The workspace store is a client context seeded by the server">
+  <h2>Decisions: store, mock, tests, controller</h2>
+  <ul>
+    <li>The workspace store is a client context seeded by the server</li>
+    <li>The device-copy offer got its missing mock</li>
+    <li>Each notes test runs on its own seeded account</li>
+    <li>The autosave controller is created in an effect, keyed by the note id</li>
+  </ul>
+</section>
+
+<section id="recap" data-part="5" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>Slice two is the notes: create, open, edit, autosave, delete, undo, copy, device retention</div>
+    <div>A monotonic revision means the newest text always wins</div>
+    <div>Deletion is soft; undo is an 8-second server-side window</div>
+    <div>132 unit and 219 acceptance tests pass</div>
+    <div>Every notes test runs on its own seeded account</div>
+  </div>
+</section>
+
+<section id="next" data-part="5" data-cue="Next time: tags and search">
+  <div class="kicker">Next</div>
+  <h2>Tags and search</h2>
+  <p class="lead">The third feature slice: the paged list, tag filter, live search and tagging in the editor.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

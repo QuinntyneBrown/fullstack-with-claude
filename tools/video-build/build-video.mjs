@@ -11,7 +11,7 @@
 //
 // Needs the manifest written by tools/video-audio (run it first), Chrome/Chromium (EDGE_PATH
 // or CHROME_PATH override; Playwright's bundled Chromium is found automatically) and ffmpeg
-// with libx264 and libass (FFMPEG_PATH override).
+// with libx264 and libass (FFMPEG_PATH override; FFMPEG_THREADS=2 for a low-memory machine).
 import { execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -289,6 +289,7 @@ function main() {
   const stills = join(cache, 'slides.mp4');
   execFileSync(ffmpeg, [
     '-y', '-v', 'error',
+    ...(process.env.FFMPEG_THREADS ? ['-threads', process.env.FFMPEG_THREADS] : []),
     '-f', 'concat', '-safe', '0', '-i', list,
     '-r', '30', '-fps_mode', 'cfr',
     '-c:v', 'libx264', '-preset', 'veryfast', '-tune', 'stillimage', '-crf', '12', '-pix_fmt', 'yuv420p',
@@ -313,6 +314,8 @@ function main() {
   graph.push(`[${last}]ass=${basename(ass)},format=yuv420p[out]`);
   execFileSync(ffmpeg, [
     '-y', '-v', 'error',
+    // FFMPEG_THREADS=2 keeps the final encode inside a low-memory machine (default: all cores).
+    ...(process.env.FFMPEG_THREADS ? ['-threads', process.env.FFMPEG_THREADS, '-filter_threads', '1'] : []),
     '-i', stills,
     '-i', mp3,
     ...clips.flatMap((s) => ['-i', s.clipFile]),

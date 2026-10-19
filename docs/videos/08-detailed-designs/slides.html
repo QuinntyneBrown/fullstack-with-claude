@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 08 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="08" data-video-title="Detailed designs" data-parts="Introduction|Output|Subsystems|One design|Diagrams|Why|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 08</div>
+  <h1>Detailed designs</h1>
+  <p class="lead">Step eleven: twenty-eight designs, one hundred and sixty diagrams, every requirement mapped.</p>
+</section>
+
+<section id="output" data-part="1" data-cue="Step eleven runs on Sonnet">
+  <h2>Step 11 · writing-design-documents</h2>
+  <div class="cols three">
+    <div class="card"><h3>28</h3><p>designs, each a <code>README.md</code> and a <code>diagrams/</code> folder</p></div>
+    <div class="card sky"><h3>160</h3><p>diagrams, PlantUML sources and rendered PNGs</p></div>
+    <div class="card forest"><h3>PlantUML 1.2026.9</h3><p>renders them</p></div>
+  </div>
+  <p class="lead">Model: Sonnet. Commit <code>2234a91</code>.</p>
+</section>
+
+<section id="promise" data-part="1" data-cue="The index at the top makes one promise">
+  <h2>One promise</h2>
+  <p class="quote">Every L2 requirement in docs/specs/L2.md is realized by one or more designs below.</p>
+  <table class="grid small">
+    <tr><th>Design</th><th>L2 requirements</th></tr>
+    <tr><td>Sign in</td><td><code>L2-003</code>, <code>L2-004</code>, <code>L2-005</code></td></tr>
+    <tr><td>Delete a note and undo</td><td><code>L2-016</code>, <code>L2-017</code></td></tr>
+    <tr><td>App shell, responsive layout and navigation drawer</td><td><code>L2-044</code>, <code>L2-045</code></td></tr>
+  </table>
+</section>
+
+<section id="subsystems" data-part="2" data-cue="The designs are grouped into five subsystems">
+  <h2>Five subsystems</h2>
+  <div class="cols four">
+    <div class="card"><h3>auth · 5</h3><p class="small">sign-up · sign-in · sessions-and-sign-out · session-expiry · credentials-and-secrets</p></div>
+    <div class="card forest"><h3>notes · 4</h3><p class="small">create-and-open-note · edit-and-autosave · offline-device-copy · delete-and-undo</p></div>
+    <div class="card sky"><h3>tags-and-search · 4</h3><p class="small">tag-a-note · browse-notes · search-notes · filter-by-tag</p></div>
+    <div class="card indoor"><h3>account · 4</h3><p class="small">account-menu · account-settings · change-password · delete-account</p></div>
+  </div>
+</section>
+
+<section id="platform" data-part="2" data-cue="Platform is the biggest">
+  <h2>platform · 11</h2>
+  <p class="lead">app-shell · dialogs · notifications · status-pages · input-and-output-safety · access-control · request-protection · in-memory-data · theming · accessibility · performance</p>
+  <p class="quote">The cross-cutting pieces every feature renders into. Built first.</p>
+</section>
+
+<section id="shape" data-part="3" data-cue="Take delete and undo, in the notes subsystem">
+  <h2>Inside one design: delete-and-undo</h2>
+  <ol class="steps">
+    <li><b>Overview</b>: what Selah is, then the terms: note, workspace store, soft delete</li>
+    <li><b>Description</b>: the slice from dialog to database, every sentence citing a criterion</li>
+    <li><b>Requirements</b>: the L2s realised and the L1 each refines</li>
+    <li><b>Diagrams</b>: context, container, component, class, one sequence per behaviour</li>
+  </ol>
+</section>
+
+<section id="slice" data-part="3" data-cue="A description walks through the slice">
+  <h2>The slice, dialog to database</h2>
+  <div class="layers">
+    <div class="l1"><b>Dialog</b><span><code>DeleteNoteDialog</code>: an alertdialog on the shared <code>Dialog</code>, focus on Cancel</span></div>
+    <div class="l2"><b>Hook</b><span><code>useDeleteNote</code>: calls delete, updates the store and counts, shows the undo toast</span></div>
+    <div class="l3"><b>Routes</b><span><code>DELETE /api/notes/:id</code> · <code>POST …/restore</code> (≤ 8,000 ms) · <code>DELETE …/deletion</code></span></div>
+    <div class="l4"><b>Repository</b><span><code>softDelete</code> sets <code>deleted_at</code> · <code>restore</code> · <code>purgeExpired</code> before every write</span></div>
+  </div>
+</section>
+
+<section id="component" data-part="4" data-cue="The component view shows what the description said">
+  <h2>C4 component view</h2>
+  <div class="cols wide-left">
+    <img src="assets/c4-component.png" alt="C4 component diagram for delete a note and undo" style="height: 560px; width: auto; border: 1px solid var(--stroke); border-radius: 12px; background: #fff">
+    <ul>
+      <li>One hook drives the dialog and the toast</li>
+      <li>Three route handlers call one repository</li>
+      <li>The purge keeps expired rows out of the table</li>
+    </ul>
+  </div>
+</section>
+
+<section id="sequence" data-part="4" data-cue="The sequence for deleting a note shows">
+  <h2>Sequence: delete a note</h2>
+  <img src="assets/sequence-delete-note.png" alt="Sequence diagram for delete a note" style="width: 1640px; height: auto; border: 1px solid var(--stroke); border-radius: 12px; background: #fff">
+</section>
+
+<section id="supply" data-part="4" data-cue="Where the design cannot decide something yet">
+  <h2>Open points are marked</h2>
+  <pre class="code" data-lang="md" data-file="docs/detailed-designs/notes/delete-and-undo/README.md">The server window is exactly 8,000 ms; whether to add a transport grace period is &lt;TO SUPPLY&gt;.</pre>
+  <p class="lead">Honest gaps, resolved and recorded during implementation.</p>
+</section>
+
+<section id="why" data-part="5" data-cue="You cannot estimate delete a note">
+  <h2>Why designs before estimates</h2>
+  <div class="cols">
+    <div class="card bad"><h3>A requirement</h3><p>Delete a note.</p></div>
+    <div class="card good"><h3>A parts list</h3><p>A dialog with three states, a hook, three route handlers, two repository functions, a purge, a toast.</p></div>
+  </div>
+  <p class="lead">The parts list is what the next step prices.</p>
+</section>
+
+<section id="recap" data-part="6" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>28 designs, 5 subsystems, 160 PlantUML diagrams; every L2 maps to a design</div>
+    <div>Platform is largest and built first: every feature renders into it</div>
+    <div>Same shape every time: overview, description citing criteria, requirements, diagrams</div>
+    <div>C4 context, container, component; class; one sequence per behaviour. Open points marked</div>
+    <div>Designs turn requirements into parts lists, which is what estimates price</div>
+  </div>
+</section>
+
+<section id="next" data-part="6" data-cue="Next time, step twelve">
+  <div class="kicker">Next</div>
+  <h2>09 · Estimates</h2>
+  <p class="lead">Ninety-nine developer-days, and a decision about scope.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>
