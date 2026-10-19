@@ -1,0 +1,25 @@
+"""Synthesize one paragraph with Kokoro-82M (Hugging Face: hexgrad/Kokoro-82M) via kokoro-onnx.
+
+usage: python kokoro_say.py <voice> <out.wav>   (text on stdin)
+
+Model files are cached in .cache/kokoro/ (kokoro-v1.0.onnx, voices-v1.0.bin) and downloaded on first use.
+"""
+import sys
+import urllib.request
+from pathlib import Path
+
+import soundfile as sf
+from kokoro_onnx import Kokoro
+
+BASE = "https://github.com/thewh1teagle/kokoro-onnx/releases/download/model-files-v1.0/"
+cache = Path(__file__).resolve().parents[2] / ".cache" / "kokoro"
+cache.mkdir(parents=True, exist_ok=True)
+for name in ("kokoro-v1.0.onnx", "voices-v1.0.bin"):
+    if not (cache / name).exists():
+        urllib.request.urlretrieve(BASE + name, cache / name)
+
+voice, out = sys.argv[1], sys.argv[2]
+text = sys.stdin.buffer.read().decode("utf-8")
+kokoro = Kokoro(str(cache / "kokoro-v1.0.onnx"), str(cache / "voices-v1.0.bin"))
+samples, rate = kokoro.create(text, voice=voice, speed=1.0, lang="en-us")
+sf.write(out, samples, rate)

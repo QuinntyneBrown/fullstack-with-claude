@@ -1,0 +1,9 @@
+{
+  "name": "fullstack-with-claude",
+  "private": true,
+  "type": "module",
+  "description": "Narrated video series: building a full-stack web app with Claude",
+  "devDependencies": {
+    "@playwright/test": "^1.50.0"
+  }
+}

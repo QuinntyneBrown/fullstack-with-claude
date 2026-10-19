@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 01 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+</head>
+<body data-video-number="01" data-video-title="The idea" data-parts="Introduction|Series|Idea|Product|Why|Look|Recap">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Video 01</div>
+  <h1>The idea</h1>
+  <p class="lead">Step one of fourteen: a small full-stack reference app, and why a notes app.</p>
+</section>
+
+<section id="steps" data-part="1" data-cue="What this series covers">
+  <h2>Fourteen steps</h2>
+  <div class="cols">
+    <ol class="steps">
+      <li>Idea</li>
+      <li>Name</li>
+      <li>Repo</li>
+      <li>Clone</li>
+      <li>Skills</li>
+      <li>Agent files</li>
+      <li>New session</li>
+    </ol>
+    <ol class="steps" style="counter-reset: step 7">
+      <li>HTML mocks</li>
+      <li>Design system</li>
+      <li>Specs</li>
+      <li>Detailed designs</li>
+      <li>Estimates</li>
+      <li>ATDD implementation</li>
+      <li>Demo videos</li>
+    </ol>
+  </div>
+</section>
+
+<section id="log" data-part="1" data-cue="Each step gets a log in">
+  <h2>Every step is recorded</h2>
+  <div class="flow">
+    <div class="node"><b>A step</b>prompt · model · commands · output</div>
+    <div class="arrow">→</div>
+    <div class="node accent"><b>A log</b><small>docs/process/</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>An episode</b><small>docs/videos/</small></div>
+  </div>
+  <p class="lead">Everything on screen comes from the logs or the real repositories, never from memory.</p>
+</section>
+
+<section id="repos" data-part="1" data-cue="Two repositories are involved">
+  <h2>Two repositories</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>This repo: the series</h3>
+      <ul>
+        <li>Scripts and slide decks</li>
+        <li>Recording and build tooling</li>
+        <li>Process logs in <code>docs/process/</code></li>
+      </ul>
+    </div>
+    <div class="card sky">
+      <h3>The reference app</h3>
+      <ul>
+        <li>Its own repo</li>
+        <li>Next.js, React, in-memory SQLite</li>
+        <li>Named in episode 02</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="prompt" data-part="2" data-cue="Step one is the idea, and it is short">
+  <div class="kicker">Step 1 · The prompt</div>
+  <p class="quote">Build a small full-stack reference web app with Next.js (App Router), React and in-memory SQLite. It is a reference app, not production.</p>
+</section>
+
+<section id="qualifiers" data-part="2" data-cue="Notice the two qualifiers">
+  <h2>Two qualifiers</h2>
+  <div class="cols">
+    <div class="card">
+      <h3>Small</h3>
+      <p>The whole app is built on screen, in a video series.</p>
+    </div>
+    <div class="card indoor">
+      <h3>Reference, not production</h3>
+      <p>Show the process, not ship a product. In-memory SQLite: nothing persists across restarts, by design.</p>
+    </div>
+  </div>
+</section>
+
+<section id="product" data-part="3" data-cue="The product is a notes app">
+  <div class="kicker">The product</div>
+  <h2>A notes app</h2>
+  <p class="lead">A user signs up and signs in, then creates, edits and deletes notes, tags them, and searches them.</p>
+</section>
+
+<section id="features" data-part="3" data-cue="That is the entire feature list">
+  <h2>The entire feature list</h2>
+  <div class="cols four">
+    <div class="card"><h3>Accounts</h3><p>Sign up, sign in</p></div>
+    <div class="card forest"><h3>Notes</h3><p>Create, edit, delete</p></div>
+    <div class="card sky"><h3>Tags</h3><p>Tag a note</p></div>
+    <div class="card indoor"><h3>Search</h3><p>Find a note</p></div>
+  </div>
+  <p class="lead">No sharing, no collaboration, no sync. Small on purpose.</p>
+</section>
+
+<section id="layers" data-part="4" data-cue="Because it is small enough to build on screen">
+  <h2>Small, yet every layer</h2>
+  <div class="layers">
+    <div class="l1"><b>UI</b><span>Notes are listed and edited</span></div>
+    <div class="l2"><b>API</b><span>What the UI talks to</span></div>
+    <div class="l3"><b>Database</b><span>Notes and tags are stored</span></div>
+    <div class="l4"><b>Auth</b><span>Users sign up and sign in</span></div>
+    <div><b>Tests</b><span>Every layer has behaviour worth checking</span></div>
+  </div>
+</section>
+
+<section id="tradeoff" data-part="4" data-cue="That is the trade-off behind the choice">
+  <h2>The trade-off</h2>
+  <div class="cols three">
+    <div class="card bad">
+      <h3>To-do list</h3>
+      <p>Smaller, but no accounts and no search.</p>
+    </div>
+    <div class="card good">
+      <h3>Notes app</h3>
+      <p>Every layer present, none of them deep.</p>
+    </div>
+    <div class="card bad">
+      <h3>A real product</h3>
+      <p>Richer, but never fits in a series.</p>
+    </div>
+  </div>
+</section>
+
+<section id="look" data-part="5" data-cue="Crisp, modern SaaS. Neutral greys">
+  <h2>Look and feel</h2>
+  <div class="cols wide-left">
+    <ul>
+      <li>Crisp, modern SaaS</li>
+      <li>Neutral greys, one indigo accent</li>
+      <li>Inter-style sans serif</li>
+      <li>Dense but clean</li>
+      <li>Light and dark themes</li>
+    </ul>
+    <div>
+      <div class="swatches">
+        <div class="sw"><i style="background: var(--page)"></i>light</div>
+        <div class="sw"><i style="background: var(--well)"></i>soft</div>
+        <div class="sw"><i style="background: var(--ink-3)"></i>mid</div>
+        <div class="sw"><i style="background: var(--ink-2)"></i>dark</div>
+        <div class="sw"><i style="background: var(--ink)"></i>ink</div>
+        <div class="sw key"><i style="background: var(--coral)"></i>indigo</div>
+      </div>
+      <p class="small muted" style="margin-top: 28px">Handed to the mocks step as the visual direction.</p>
+    </div>
+  </div>
+</section>
+
+<section id="direction" data-part="5" data-cue="Writing this down at step one matters">
+  <h2>Decided once, inherited everywhere</h2>
+  <div class="flow">
+    <div class="node accent"><b>Idea</b>look and feel</div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Mocks</b><small>step 8</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Design system</b><small>step 9</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>Specs</b><small>step 10</small></div>
+    <div class="arrow">→</div>
+    <div class="node"><b>The app</b><small>step 13</small></div>
+  </div>
+</section>
+
+<section id="recap" data-part="6" data-cue="Things to remember from this episode">
+  <h2>Things to remember</h2>
+  <div class="recap">
+    <div>Fourteen steps, each with a log in <code>docs/process/</code> and an episode</div>
+    <div>A small full-stack reference app: Next.js, React, in-memory SQLite. Not production</div>
+    <div>A notes app: accounts, notes, tags, search</div>
+    <div>Small enough for the screen, yet UI, API, database, auth and tests</div>
+    <div>Look and feel fixed up front: crisp SaaS, neutral greys, one indigo accent, light and dark</div>
+  </div>
+</section>
+
+<section id="next" data-part="6" data-cue="Next time, step two">
+  <div class="kicker">Next</div>
+  <h2>02 · Naming the app</h2>
+  <p class="lead">Opus picks the name, and why a good name is worth the stronger model.</p>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>
