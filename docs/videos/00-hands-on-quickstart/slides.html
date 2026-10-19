@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Video 00 Slides</title>
+<link rel="stylesheet" href="../assets/slides.css">
+<style>
+  .step-no { display: inline-block; background: var(--coral); color: #fff; border-radius: 999px; padding: 2px 22px; font-size: 30px; font-weight: 700; margin-right: 18px; vertical-align: middle; }
+  .stack { display: flex; flex-direction: column; gap: 22px; margin-top: 18px; }
+  .stack pre.code { font-size: 30px; line-height: 1.45; }
+  .check { margin-top: 22px; font-size: 34px; }
+  .check b { color: var(--coral-ink); }
+  .model { float: right; font-size: 26px; background: #fff; border: 2px solid var(--stroke); border-radius: 999px; padding: 4px 22px; margin-top: 8px; }
+  .pic { display: block; margin: 12px auto 0; border: 1px solid var(--stroke); border-radius: 12px; background: #fff; }
+  .steps14 { columns: 2; column-gap: 80px; font-size: 40px; line-height: 1.5; margin-top: 18px; }
+</style>
+</head>
+<body data-video-number="0" data-video-title="Build a full stack app with Claude Code, hands on" data-parts="Intro|Set up|Design|Specify|Build|Ship">
+
+<section id="title" data-part="0">
+  <div class="kicker">Full stack with Claude · Hands-on quickstart</div>
+  <h1>Build a full stack app with Claude Code</h1>
+  <p class="lead">Fourteen steps: what to type, what to prompt, how to check. Any stack, any app.</p>
+</section>
+
+<section id="map" data-part="0" data-cue="The map">
+  <h2>The 14 steps</h2>
+  <ol class="steps14">
+    <li>Idea</li><li>Name</li><li>Repo</li><li>Clone</li><li>Skills</li><li>Agent files</li><li>Fresh session</li>
+    <li>HTML mocks</li><li>Design system</li><li>Specs</li><li>Detailed designs</li><li>Estimates</li><li>Build, test first</li><li>Demo videos</li>
+  </ol>
+</section>
+
+<section id="idea" data-part="1" data-cue="Step 1 · The idea">
+  <h2><span class="step-no">1</span>The idea</h2>
+  <div class="stack">
+<pre class="code" data-file="Prompt to Claude Code">Build a small full-stack reference web app with &lt;your stack&gt;.
+It is a reference app, not production.
+&lt;What it does, in two or three lines.&gt;
+&lt;Look and feel: colours, type, light and dark.&gt;</pre>
+  </div>
+  <p class="check"><b>Check:</b> could a stranger read it and know what to build?</p>
+</section>
+
+<section id="name" data-part="1" data-cue="Step 2 · A name">
+  <h2><span class="step-no">2</span>A name <span class="model">Opus</span></h2>
+  <div class="stack">
+<pre class="code" data-file="Prompt to Claude Code">What would be a good unique name for a small notes app?
+Consider a particular meaning or association: biblical,
+abstract, descriptive.</pre>
+  </div>
+  <p class="check"><b>Got:</b> Selah, Zikaron, Baruch, Marginalia. <b>Check:</b> say it out loud.</p>
+</section>
+
+<section id="repo" data-part="1" data-cue="Step 3 · The repo">
+  <h2><span class="step-no">3</span>The repo</h2>
+  <div class="stack">
+<pre class="code tight" data-file="Terminal">$ gh repo create YOU/your-app --public --description "..."</pre>
+  </div>
+</section>
+
+<section id="clone" data-part="1" data-cue="Step 4 · Clone it">
+  <h2><span class="step-no">4</span>Clone it</h2>
+  <div class="stack">
+<pre class="code" data-file="Terminal">$ gh repo clone YOU/your-app
+You appear to have cloned an empty repository.</pre>
+  </div>
+</section>
+
+<section id="skills" data-part="1" data-cue="Step 5 · Skills">
+  <h2><span class="step-no">5</span>Skills</h2>
+  <div class="stack">
+<pre class="code" data-file="Terminal">$ cp -r skills/* .claude/skills/
+$ cp -r skills/* .agents/skills/
+$ diff -r .claude/skills .agents/skills</pre>
+  </div>
+  <p class="check"><b>Check:</b> the diff prints nothing.</p>
+</section>
+
+<section id="agents" data-part="1" data-cue="Step 6 · Agent files">
+  <h2><span class="step-no">6</span>Agent files <span class="model">Sonnet</span></h2>
+  <div class="stack">
+<pre class="code" data-file="Claude Code">/writing-agent-instructions</pre>
+<pre class="code" data-file="Prompt to Claude Code">The project shall be &lt;what it is, the stack, your guardrails&gt;.</pre>
+  </div>
+  <p class="check"><b>Got:</b> AGENTS.md (125 lines; keep it under 150) plus pointer files. <b>Check:</b> your guardrails are in it.</p>
+</section>
+
+<section id="fresh" data-part="1" data-cue="Step 7 · A fresh session">
+  <h2><span class="step-no">7</span>A fresh session</h2>
+  <div class="stack">
+<pre class="code tight" data-file="Terminal">$ claude -p "In two short bullet lists: (1) the names of the skills
+available to you in this project, (2) a one-sentence summary of
+AGENTS.md. Do not use tools." --model sonnet</pre>
+  </div>
+  <p class="check"><b>Check:</b> it lists your skills and summarizes your file.</p>
+</section>
+
+<section id="mocks" data-part="2" data-cue="Step 8 · HTML mocks">
+  <h2><span class="step-no">8</span>HTML mocks <span class="model">Fable</span></h2>
+  <div class="stack">
+<pre class="code" data-file="Claude Code">/writing-html-mocks</pre>
+  </div>
+  <p class="check"><b>Got:</b> 65 HTML files · 16 screens · 63 states · light and dark · 108 of 108 contrast pairs pass.</p>
+</section>
+
+<section id="mockstour" data-part="2" data-cue="Here is what the mocks look like on screen" data-clip="clips/mocks-tour.mp4">
+  <div class="clip-notes">
+    <h3>Click around your mocks</h3>
+    <ul>
+      <li>Gallery with every state</li>
+      <li>Notes page</li>
+      <li><code>t</code> flips light and dark</li>
+      <li>Dialog, toast</li>
+      <li>Fix it now, while it is cheap</li>
+    </ul>
+  </div>
+</section>
+
+<section id="ds" data-part="2" data-cue="Step 9 · Design system">
+  <h2><span class="step-no">9</span>Design system <span class="model">Sonnet · low</span></h2>
+  <div class="stack">
+<pre class="code" data-file="Claude Code">/extracting-design-systems</pre>
+  </div>
+  <p class="check"><b>Got:</b> 65 pages · 254 tokens · 134 contrast pairs pass. <b>Rule:</b> no one-off colours.</p>
+</section>
+
+<section id="dstour" data-part="2" data-cue="Here is a quick tour." data-clip="clips/design-system-tour.mp4">
+  <div class="clip-notes">
+    <h3>The design system</h3>
+    <ul>
+      <li>Index and foundations</li>
+      <li>Button: variants, states</li>
+      <li>Colour tokens, light and dark</li>
+    </ul>
+  </div>
+</section>
+
+<section id="specs" data-part="3" data-cue="Step 10 · Specs">
+  <h2><span class="step-no">10</span>Specs <span class="model">Sonnet · low</span></h2>
+  <div class="stack">
+<pre class="code" data-file="Claude Code">/writing-requirements</pre>
+<pre class="code tight" data-file="An acceptance criterion">Given the toast, when "Undo" is chosen within 8 seconds, then the note
+returns with the same id, title, text, tags and last-edited time.</pre>
+  </div>
+  <p class="check"><b>Got:</b> 11 high-level · 49 detailed · 281 criteria. <b>Check:</b> every criterion is testable.</p>
+</section>
+
+<section id="designs" data-part="3" data-cue="Step 11 · Detailed designs">
+  <h2><span class="step-no">11</span>Detailed designs <span class="model">Sonnet</span></h2>
+  <div class="stack">
+<pre class="code" data-file="Claude Code">/writing-design-documents</pre>
+  </div>
+  <p class="check"><b>Got:</b> 28 designs · 160 diagrams. <b>Check:</b> each design points back to its requirement.</p>
+</section>
+
+<section id="seq" data-part="3" data-cue="Here is a sequence diagram for deleting a note and undoing it">
+  <h2>Sequence diagram: delete a note, then undo</h2>
+  <img class="pic" src="assets/sequence-delete-note.png" alt="Sequence diagram for delete a note" style="width: 1500px; height: auto">
+</section>
+
+<section id="estimates" data-part="3" data-cue="Step 12 · Estimates">
+  <h2><span class="step-no">12</span>Estimates <span class="model">Sonnet · low</span></h2>
+  <div class="stack">
+<pre class="code" data-file="Claude Code">/estimating-designs</pre>
+  </div>
+  <p class="check"><b>Got:</b> 99 developer-days. Descope or keep: <b>you decide</b> before any code.</p>
+</section>
+
+<section id="build" data-part="4" data-cue="Step 13 · Build it, test first">
+  <h2><span class="step-no">13</span>Build it, test first</h2>
+  <div class="stack">
+<pre class="code tight" data-file="Prompt to Claude Code">Implement the next slice from the estimates, one acceptance criterion
+at a time. Write the failing end-to-end test first, then the code that
+makes it pass. Then run unit tests, end-to-end tests, typecheck and
+lint, and update the progress log.</pre>
+  </div>
+  <p class="check"><b>Rule:</b> no code without a failing acceptance test.</p>
+</section>
+
+<section id="gates" data-part="4" data-cue="Every test names the requirement it proves">
+  <h2>After every slice</h2>
+  <div class="cols">
+    <div class="card good"><h3>Green</h3><p>unit and end-to-end tests</p></div>
+    <div class="card sky"><h3>Clean</h3><p>typecheck and lint</p></div>
+    <div class="card forest"><h3>Logged</h3><p>progress log updated</p></div>
+  </div>
+  <p class="check">Selah today: <b>172</b> unit tests and <b>280</b> acceptance tests pass.</p>
+</section>
+
+<section id="apptour" data-part="4" data-cue="Here is the running app" data-clip="clips/app-tour.mp4">
+  <div class="clip-notes">
+    <h3>Your app, running</h3>
+    <ul>
+      <li>Open a note</li>
+      <li>Search narrows the list</li>
+      <li>New note, autosaves</li>
+      <li>Add a tag</li>
+    </ul>
+  </div>
+</section>
+
+<section id="demo" data-part="5" data-cue="Step 14 · Demo videos">
+  <h2><span class="step-no">14</span>Demo videos</h2>
+  <div class="stack">
+<pre class="code" data-file="Claude Code">/recording-demo-videos</pre>
+  </div>
+  <p class="check">Run it once your slices are done.</p>
+</section>
+
+<section id="recap" data-part="5" data-cue="Recap">
+  <h2>Now go build something!</h2>
+  <div class="recap">
+    <div>Idea, name, repo, clone</div>
+    <div>Skills, agent files, fresh session</div>
+    <div>Mock every state, extract the design system</div>
+    <div>Testable specs, designs, estimates</div>
+    <div>Build one slice at a time, test first, then record the demo</div>
+  </div>
+</section>
+
+<script src="../assets/slides.js"></script>
+</body>
+</html>

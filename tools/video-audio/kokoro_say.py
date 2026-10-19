@@ -4,6 +4,7 @@ usage: python kokoro_say.py <voice> <out.wav>   (text on stdin)
 
 Model files are cached in .cache/kokoro/ (kokoro-v1.0.onnx, voices-v1.0.bin) and downloaded on first use.
 """
+import os
 import sys
 import urllib.request
 from pathlib import Path
@@ -30,7 +31,7 @@ session = ort.InferenceSession(str(cache / "kokoro-v1.0.onnx"), sess_options=opt
 kokoro = Kokoro.from_session(session, str(cache / "voices-v1.0.bin"))
 
 def synth(chunk):
-    return kokoro.create(chunk, voice=voice, speed=1.0, lang="en-us")
+    return kokoro.create(chunk, voice=voice, speed=float(os.environ.get("KOKORO_SPEED", "1.0")), lang="en-us")
 
 
 try:

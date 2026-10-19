@@ -4,6 +4,7 @@ One episode per step of the 14-step process. Each folder holds the transcript (`
 
 | # | Episode | Step | Runtime | Status |
 |---|---|---|---|---|
+| 00 | [Hands-on quickstart: the whole flow](00-hands-on-quickstart/README.md) | 1–14 | ~9.7 min | Built |
 | 01 | [The idea](01-the-idea/README.md) | 1 · Idea | ~4 min | Built |
 | 02 | [Naming the app](02-naming-the-app/README.md) | 2 · Name (Opus) | ~3 min | Built |
 | 03 | [Repo, clone and skills](03-repo-clone-skills/README.md) | 3–5 | ~3.5 min | Built |
